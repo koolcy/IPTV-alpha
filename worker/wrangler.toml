@@ -2,6 +2,9 @@ name = "iptv-admin"
 main = "src/index.js"
 compatibility_date = "2026-08-29"
 
+[vars]
+SOURCE_URL = "https://example.com/live.txt"
+
 [[d1_databases]]
 binding = "iptv"
 database_name = "iptv"
