@@ -1,0 +1,12 @@
+name = "migu-iptv-worker"
+main = "_worker.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "iptv"
+database_name = "iptv"
+database_id = "a62b8116-c35e-4f56-98ed-03ea5597b2cb"
+
+[[kv_namespaces]]
+binding = "IPTV_KV"
+id = "547edac36fbb4e5bbfd37357ce123185"
