@@ -1,6 +1,6 @@
-name = "migu-iptv-worker"
-main = "_worker.js"
-compatibility_date = "2024-01-01"
+name = "iptv-admin"
+main = "src/index.js"
+compatibility_date = "2026-08-29"
 
 [[d1_databases]]
 binding = "iptv"
