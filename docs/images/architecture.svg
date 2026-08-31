@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="620" viewBox="0 0 1000 620">
+<rect width="1000" height="620" fill="#f8fafc"/>
+<text x="500" y="45" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700">IPTV-alpha Architecture</text>
+<g font-family="Arial,sans-serif" text-anchor="middle">
+<rect x="350" y="75" width="300" height="60" rx="12" fill="#fff" stroke="#334155" stroke-width="2"/><text x="500" y="112" font-size="20">Users / Players</text>
+<line x1="500" y1="135" x2="500" y2="175" stroke="#475569" stroke-width="3"/><polygon points="500,185 492,172 508,172" fill="#475569"/>
+<rect x="350" y="190" width="300" height="60" rx="12" fill="#fff" stroke="#334155" stroke-width="2"/><text x="500" y="227" font-size="20">Cloudflare CDN</text>
+<line x1="500" y1="250" x2="500" y2="290" stroke="#475569" stroke-width="3"/><polygon points="500,300 492,287 508,287" fill="#475569"/>
+<rect x="300" y="305" width="400" height="70" rx="12" fill="#fff" stroke="#0f172a" stroke-width="3"/><text x="500" y="348" font-size="22" font-weight="700">Cloudflare Worker / IPTV Core</text>
+<line x1="370" y1="375" x2="220" y2="430" stroke="#475569" stroke-width="3"/><line x1="500" y1="375" x2="500" y2="430" stroke="#475569" stroke-width="3"/><line x1="630" y1="375" x2="780" y2="430" stroke="#475569" stroke-width="3"/>
+<rect x="110" y="440" width="220" height="70" rx="12" fill="#fff" stroke="#334155" stroke-width="2"/><text x="220" y="483" font-size="20">KV</text><text x="220" y="505" font-size="13">Cache / Config</text>
+<rect x="390" y="440" width="220" height="70" rx="12" fill="#fff" stroke="#334155" stroke-width="2"/><text x="500" y="483" font-size="20">D1</text><text x="500" y="505" font-size="13">Channels / Users / EPG</text>
+<rect x="670" y="440" width="220" height="70" rx="12" fill="#fff" stroke="#334155" stroke-width="2"/><text x="780" y="483" font-size="20">Cron</text><text x="780" y="505" font-size="13">Sync / Check / Cleanup</text>
+<rect x="300" y="545" width="400" height="50" rx="12" fill="#fff" stroke="#334155" stroke-width="2"/><text x="500" y="577" font-size="18">M3U · TVBox · EPG · Admin API</text>
+</g>
+</svg>
