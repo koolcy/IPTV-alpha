@@ -8,11 +8,7 @@ function db(env) {
 }
 
 async function readBody(request) {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
+  try { return await request.json(); } catch { return null; }
 }
 
 export async function adminSourceList(request, env) {
@@ -22,31 +18,23 @@ export async function adminSourceList(request, env) {
   const search = (url.searchParams.get('search') || '').trim();
   const offset = (page - 1) * size;
   const database = db(env);
-
   const where = search ? 'WHERE name LIKE ? OR url LIKE ?' : '';
   const params = search ? [`%${search}%`, `%${search}%`] : [];
   const count = await database.prepare(`SELECT COUNT(*) AS total FROM sources ${where}`).bind(...params).first();
   const sources = await database.prepare(`SELECT id, name, url, status, update_time FROM sources ${where} ORDER BY id DESC LIMIT ? OFFSET ?`).bind(...params, size, offset).all();
-
   return json({ page, size, total: Number(count?.total || 0), sources: sources.results || [] });
 }
 
 export async function adminSourceAdd(request, env) {
   const body = await readBody(request);
   if (!body?.name || !body?.url) return json({ error: 'name and url are required' }, 400);
-
-  const database = db(env);
-  const result = await database.prepare(
-    'INSERT INTO sources (name, url, status, update_time) VALUES (?, ?, ?, ?)'
-  ).bind(String(body.name).trim(), String(body.url).trim(), 'active', Date.now()).run();
-
+  const result = await db(env).prepare('INSERT INTO sources (name, url, status, update_time) VALUES (?, ?, ?, ?)').bind(String(body.name).trim(), String(body.url).trim(), 'active', Date.now()).run();
   return json({ success: true, id: result.meta.last_row_id });
 }
 
 export async function adminSourceDelete(request, env) {
   const body = await readBody(request);
   if (!body?.id) return json({ error: 'id is required' }, 400);
-
   await db(env).prepare('DELETE FROM sources WHERE id = ?').bind(Number(body.id)).run();
   return json({ success: true });
 }
@@ -67,7 +55,6 @@ export async function adminChannelList(request, env) {
   const group = (url.searchParams.get('group') || '').trim();
   const offset = (page - 1) * size;
   const database = db(env);
-
   const clauses = [];
   const params = [];
   if (search) { clauses.push('(name LIKE ? OR url LIKE ?)'); params.push(`%${search}%`, `%${search}%`); }
@@ -75,15 +62,13 @@ export async function adminChannelList(request, env) {
   const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
   const count = await database.prepare(`SELECT COUNT(*) AS total FROM channels ${where}`).bind(...params).first();
   const channels = await database.prepare(`SELECT id, name, group_name, url, logo, source, status FROM channels ${where} ORDER BY id DESC LIMIT ? OFFSET ?`).bind(...params, size, offset).all();
-
   return json({ page, size, total: Number(count?.total || 0), channels: channels.results || [] });
 }
 
 export async function adminChannelUpdate(request, env) {
   const body = await readBody(request);
   if (!body?.id) return json({ error: 'id is required' }, 400);
-  const fields = [];
-  const values = [];
+  const fields = [], values = [];
   for (const key of ['name', 'group_name', 'url', 'logo', 'source', 'status']) {
     if (body[key] !== undefined) { fields.push(`${key} = ?`); values.push(String(body[key])); }
   }
@@ -107,12 +92,13 @@ export async function adminChannelGroups(env) {
 
 export async function adminDashboard(env) {
   const database = db(env);
-  const [sources, activeSources, channels, activeChannels, users] = await Promise.all([
+  const [sources, activeSources, channels, activeChannels, users, programs] = await Promise.all([
     database.prepare('SELECT COUNT(*) AS n FROM sources').first(),
     database.prepare("SELECT COUNT(*) AS n FROM sources WHERE status = 'active'").first(),
     database.prepare('SELECT COUNT(*) AS n FROM channels').first(),
     database.prepare("SELECT COUNT(*) AS n FROM channels WHERE status = 'active'").first(),
-    database.prepare('SELECT COUNT(*) AS n FROM users').first()
+    database.prepare('SELECT COUNT(*) AS n FROM users').first(),
+    database.prepare('SELECT COUNT(*) AS n FROM programs').first()
   ]);
-  return json({ version: '3.0-beta.2', sources: Number(sources?.n || 0), activeSources: Number(activeSources?.n || 0), channels: Number(channels?.n || 0), activeChannels: Number(activeChannels?.n || 0), users: Number(users?.n || 0) });
+  return json({ version: '3.0-beta.4', sources: Number(sources?.n || 0), activeSources: Number(activeSources?.n || 0), channels: Number(channels?.n || 0), activeChannels: Number(activeChannels?.n || 0), users: Number(users?.n || 0), programs: Number(programs?.n || 0) });
 }
