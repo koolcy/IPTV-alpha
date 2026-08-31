@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 
 const apiBase = ref(localStorage.getItem('iptv_api_base') || '');
+const adminToken = ref(localStorage.getItem('iptv_admin_token') || '');
 const dashboard = ref(null);
 const sources = ref([]);
 const name = ref('');
@@ -9,8 +10,10 @@ const sourceUrl = ref('');
 const loading = ref(false);
 const message = ref('');
 
-async function request(path, options) {
-  const response = await fetch(`${apiBase.value}${path}`, options);
+async function request(path, options = {}) {
+  const headers = new Headers(options.headers || {});
+  headers.set('X-Admin-Token', adminToken.value);
+  const response = await fetch(`${apiBase.value}${path}`, { ...options, headers });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
   return data;
@@ -60,19 +63,19 @@ async function removeSource(id) {
 
 function saveApi() {
   localStorage.setItem('iptv_api_base', apiBase.value.replace(/\/$/, ''));
+  localStorage.setItem('iptv_admin_token', adminToken.value);
   load();
 }
 
-onMounted(load);
+onMounted(() => {
+  if (apiBase.value && adminToken.value) load();
+});
 </script>
 
 <template>
   <main class="shell">
     <header class="header">
-      <div>
-        <p class="eyebrow">IPTV-ALPHA</p>
-        <h1>管理后台</h1>
-      </div>
+      <div><p class="eyebrow">IPTV-ALPHA</p><h1>管理后台</h1></div>
       <span class="badge">v3.0-beta.1</span>
     </header>
 
@@ -80,6 +83,10 @@ onMounted(load);
       <label>Worker API 地址</label>
       <div class="row">
         <input v-model="apiBase" placeholder="https://your-worker.example.workers.dev" />
+      </div>
+      <label class="token-label">Admin Token</label>
+      <div class="row">
+        <input v-model="adminToken" type="password" placeholder="Cloudflare Worker ADMIN_TOKEN" />
         <button @click="saveApi">保存并连接</button>
       </div>
     </section>
@@ -89,7 +96,7 @@ onMounted(load);
     <section class="stats">
       <div class="card stat"><span>直播源</span><strong>{{ dashboard?.sources ?? '-' }}</strong></div>
       <div class="card stat"><span>启用源</span><strong>{{ dashboard?.activeSources ?? '-' }}</strong></div>
-      <div class="card stat"><span>Worker</span><strong>Online</strong></div>
+      <div class="card stat"><span>Worker</span><strong>{{ dashboard ? 'Online' : '-' }}</strong></div>
     </section>
 
     <section class="card">
