@@ -6,6 +6,7 @@ import { outputM3U } from './api/live.js';
 import { outputTVBox } from './api/tvbox.js';
 import { outputEPG } from './api/epg-public.js';
 import { apiRouter } from './api/router.js';
+import { userSubscription } from './api/user-public.js';
 
 function cors(response) {
   const headers = new Headers(response.headers);
@@ -33,7 +34,13 @@ export default {
       if (response) return cors(response);
     }
 
-    if (url.pathname === '/health') return cors(Response.json({ status: 'ok', version: '3.0-beta.3' }));
+    const userMatch = url.pathname.match(/^\/u\/([^/]+)(?:\.m3u|\/tvbox)?$/);
+    if (userMatch && request.method === 'GET') {
+      const isTVBox = url.pathname.endsWith('/tvbox');
+      return cors(await userSubscription(request, env, isTVBox ? 'tvbox' : 'm3u'));
+    }
+
+    if (url.pathname === '/health') return cors(Response.json({ status: 'ok', version: '3.0-beta.4' }));
     if (url.pathname === '/epg.xml') return cors(await outputEPG(env));
 
     const sourceURL = env.SOURCE_URL || CONFIG.SOURCE_URL;
@@ -44,6 +51,6 @@ export default {
     const list = text.includes('#EXTM3U') ? parseM3U(text) : parseTXT(text);
     if (url.pathname === '/live.m3u') return outputM3U(list);
     if (url.pathname === '/tvbox') return outputTVBox(list);
-    return new Response('IPTV-alpha v3.0-beta.3');
+    return new Response('IPTV-alpha v3.0-beta.4');
   }
 };
