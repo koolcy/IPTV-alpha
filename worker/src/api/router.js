@@ -9,6 +9,7 @@ import {
   adminChannelDelete,
   adminChannelGroups
 } from './admin.js';
+import { adminEpgImport, adminEpgList, adminEpgClear } from './epg.js';
 
 export async function apiRouter(request, env) {
   const url = new URL(request.url);
@@ -22,6 +23,9 @@ export async function apiRouter(request, env) {
   if (url.pathname === '/admin/channel/update' && request.method === 'POST') return adminChannelUpdate(request, env);
   if (url.pathname === '/admin/channel/delete' && request.method === 'POST') return adminChannelDelete(request, env);
   if (url.pathname === '/admin/channel/groups' && request.method === 'GET') return adminChannelGroups(env);
+  if (url.pathname === '/admin/epg/import' && request.method === 'POST') return adminEpgImport(request, env);
+  if (url.pathname === '/admin/epg/list' && request.method === 'GET') return adminEpgList(request, env);
+  if (url.pathname === '/admin/epg/clear' && request.method === 'POST') return adminEpgClear(request, env);
 
   return Response.json({ error: 'Not Found' }, { status: 404 });
 }
