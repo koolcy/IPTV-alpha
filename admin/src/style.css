@@ -1,0 +1,29 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f7fb; color: #172033; }
+button, input { font: inherit; }
+.shell { max-width: 1100px; margin: 0 auto; padding: 40px 20px 70px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.eyebrow { margin: 0 0 4px; font-size: 12px; letter-spacing: .16em; font-weight: 700; opacity: .55; }
+h1, h2 { margin: 0; }
+h1 { font-size: 30px; }
+h2 { font-size: 18px; }
+.badge { padding: 7px 11px; border-radius: 999px; background: #e8eefc; font-size: 12px; }
+.card { background: #fff; border: 1px solid #e6eaf1; border-radius: 16px; padding: 20px; box-shadow: 0 8px 30px rgba(24, 39, 75, .05); }
+.config { margin-bottom: 18px; }
+label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 700; }
+.row { display: flex; gap: 10px; }
+input { min-width: 0; width: 100%; border: 1px solid #d8deea; border-radius: 10px; padding: 11px 12px; outline: none; }
+input:focus { border-color: #7c8ff5; }
+button { border: 0; border-radius: 10px; padding: 11px 15px; cursor: pointer; background: #2638c7; color: #fff; font-weight: 700; white-space: nowrap; }
+button.ghost { background: #eef1f7; color: #303b50; }
+button.danger { background: #fff0f0; color: #c62828; }
+.error { color: #b42318; background: #fff1f0; padding: 12px 14px; border-radius: 10px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 18px; }
+.stat span { display: block; color: #697386; font-size: 13px; margin-bottom: 10px; }
+.stat strong { font-size: 28px; }
+.section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.form { margin-bottom: 16px; }
+.empty { color: #7a8497; text-align: center; padding: 30px; }
+.source { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid #edf0f5; }
+.source small { display: block; margin-top: 4px; color: #788397; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .stats { grid-template-columns: 1fr; } .row, .form { flex-direction: column; } .header { align-items: flex-start; gap: 12px; } }
