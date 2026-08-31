@@ -1,0 +1,11 @@
+services:
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    ports:
+      - "8787:8787"
+    volumes:
+      - ./worker:/app/worker
+    working_dir: /app/worker
+    command: npm run dev -- --host 0.0.0.0 --port 8787
