@@ -7,5 +7,9 @@ services:
       - "8787:8787"
     volumes:
       - ./worker:/app/worker
+      - worker_node_modules:/app/worker/node_modules
     working_dir: /app/worker
     command: npm run dev -- --host 0.0.0.0 --port 8787
+
+volumes:
+  worker_node_modules:
