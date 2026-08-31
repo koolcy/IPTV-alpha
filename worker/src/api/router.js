@@ -10,6 +10,7 @@ import {
   adminChannelGroups
 } from './admin.js';
 import { adminEpgImport, adminEpgList, adminEpgClear } from './epg.js';
+import { adminUserList, adminUserAdd, adminUserUpdate, adminUserDelete, adminUserResetToken } from './users.js';
 
 export async function apiRouter(request, env) {
   const url = new URL(request.url);
@@ -26,6 +27,11 @@ export async function apiRouter(request, env) {
   if (url.pathname === '/admin/epg/import' && request.method === 'POST') return adminEpgImport(request, env);
   if (url.pathname === '/admin/epg/list' && request.method === 'GET') return adminEpgList(request, env);
   if (url.pathname === '/admin/epg/clear' && request.method === 'POST') return adminEpgClear(request, env);
+  if (url.pathname === '/admin/user/list' && request.method === 'GET') return adminUserList(request, env);
+  if (url.pathname === '/admin/user/add' && request.method === 'POST') return adminUserAdd(request, env);
+  if (url.pathname === '/admin/user/update' && request.method === 'POST') return adminUserUpdate(request, env);
+  if (url.pathname === '/admin/user/delete' && request.method === 'POST') return adminUserDelete(request, env);
+  if (url.pathname === '/admin/user/reset-token' && request.method === 'POST') return adminUserResetToken(request, env);
 
   return Response.json({ error: 'Not Found' }, { status: 404 });
 }
