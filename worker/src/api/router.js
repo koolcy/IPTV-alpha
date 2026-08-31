@@ -1,21 +1,11 @@
-import {
-  adminDashboard,
-  adminSourceList,
-  adminSourceAdd,
-  adminSourceDelete,
-  adminSourceToggle,
-  adminChannelList,
-  adminChannelUpdate,
-  adminChannelDelete,
-  adminChannelGroups
-} from './admin.js';
+import { adminDashboard, adminSourceList, adminSourceAdd, adminSourceDelete, adminSourceToggle, adminChannelList, adminChannelUpdate, adminChannelDelete, adminChannelGroups } from './admin.js';
 import { adminEpgImport, adminEpgList, adminEpgClear } from './epg.js';
 import { adminUserList, adminUserAdd, adminUserUpdate, adminUserDelete, adminUserResetToken } from './users.js';
 import { listPlans, savePlan, deletePlan } from './plan-admin.js';
+import { listApiKeys, createApiKey, toggleApiKey, deleteApiKey } from './key-admin.js';
 
 export async function apiRouter(request, env) {
   const url = new URL(request.url);
-
   if (url.pathname === '/admin/dashboard' && request.method === 'GET') return adminDashboard(env);
   if (url.pathname === '/admin/source/list' && request.method === 'GET') return adminSourceList(request, env);
   if (url.pathname === '/admin/source/add' && request.method === 'POST') return adminSourceAdd(request, env);
@@ -36,6 +26,9 @@ export async function apiRouter(request, env) {
   if (url.pathname === '/admin/plan/list' && request.method === 'GET') return listPlans(request, env);
   if (url.pathname === '/admin/plan/save' && request.method === 'POST') return savePlan(request, env);
   if (url.pathname === '/admin/plan/delete' && request.method === 'POST') return deletePlan(request, env);
-
+  if (url.pathname === '/admin/api-key/list' && request.method === 'GET') return listApiKeys(request, env);
+  if (url.pathname === '/admin/api-key/create' && request.method === 'POST') return createApiKey(request, env);
+  if (url.pathname === '/admin/api-key/toggle' && request.method === 'POST') return toggleApiKey(request, env);
+  if (url.pathname === '/admin/api-key/delete' && request.method === 'POST') return deleteApiKey(request, env);
   return Response.json({ error: 'Not Found' }, { status: 404 });
 }
