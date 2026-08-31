@@ -1,336 +1,235 @@
 # 📺 IPTV-alpha
 
-> Cloudflare Workers 驱动的 IPTV 管理平台
->
-> 轻量 · 高性能 · Serverless · 可扩展
+> Cloudflare Workers 驱动的轻量级 IPTV 数据管理项目
 
-## 项目介绍
+IPTV-alpha 是一个面向 IPTV 直播源、频道和节目数据管理的 Serverless 项目。当前代码以 Cloudflare Workers 为核心，并提供 M3U/TXT 解析、M3U 输出和 TVBox 输出等基础能力。
 
-IPTV-alpha 是一个基于 Cloudflare Workers 架构的 IPTV 数据管理系统，用于管理直播源、频道、EPG 和用户订阅。
+> **状态：v3.0 开发中 / Alpha。** README 不会把尚未提交或尚未实现的后台、用户、EPG、商业化功能标记为“已完成”。请以仓库实际源码为准。
 
-主要能力：
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange.svg)](https://workers.cloudflare.com/)
 
-- M3U / M3U8 / TXT 直播源解析
-- 频道管理
-- M3U 输出
-- TVBox 接口
-- EPG 节目单
-- 用户订阅 Token
-- 权限控制
-- 自动检测
-- CDN 缓存
-- Vue3 管理后台
+## ✨ 当前能力
 
----
+- 📡 M3U / M3U8 / TXT 直播源解析
+- 🔤 自动识别 M3U 与 TXT 数据
+- 🧹 基础数据解码与解析
+- 📺 M3U 播放列表输出
+- 📦 TVBox 数据输出
+- ☁️ Cloudflare Workers Serverless 部署
+- 🗄️ Wrangler 配置 D1 / KV 的基础结构
+- 🐳 Docker 本地 Worker 开发环境
+- 🔄 GitHub Actions 自动部署 Worker
 
-## ✨ 功能特性
+## 🏗 当前架构
 
-### 📡 直播源管理
+```text
+                 ┌─────────────────┐
+                 │      用户       │
+                 └────────┬────────┘
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │ Cloudflare      │
+                 │ Worker          │
+                 └────────┬────────┘
+                          │
+             ┌────────────┴────────────┐
+             ▼                         ▼
+      ┌─────────────┐           ┌─────────────┐
+      │ Source URL  │           │ Output API  │
+      │ M3U/TXT     │           │ M3U / TVBox │
+      └─────────────┘           └─────────────┘
 
-支持：
-
-- M3U
-- M3U8
-- TXT
-- HTTP订阅地址
-
-功能：
-
-- 自动解析
-- 内容清洗
-- 分类整理
-- 源状态检测
-
-### 📺 频道管理
-
-支持：
-
-- 频道搜索
-- 分组管理
-- LOGO管理
-- 在线检测
-- 批量维护
-
-### 📦 输出接口
-
-M3U：
-
-```
-/live.m3u
+      规划中的 Cloudflare 服务：KV / D1 / Cron
 ```
 
-TVBox：
+## 📂 项目结构
 
-```
-/tvbox
-```
-
-API：
-
-```
-/api/channel
-```
-
-### 🗓 EPG系统
-
-支持：
-
-- XMLTV 导入
-- 自动频道匹配
-- 节目查询
-- TVBox EPG
-
-### 👥 用户订阅
-
-支持：
-
-- 用户管理
-- Token订阅
-- 到期控制
-- 权限限制
-
-示例：
-
-```
-/u/{token}.m3u
-```
-
----
-
-# 🏗 系统架构
-
-```
-用户
- |
-Cloudflare CDN
- |
-Worker API
- |
-+-------------+-------------+
-|             |             |
-KV            D1          Cache
-缓存          数据库       加速
- |
-IPTV Core
- |
-+-------------+-------------+
-M3U        TVBox        EPG
- |
-Vue3 Admin
-```
-
----
-
-# 📂 项目结构
-
-```
-IPTV-alpha
-|
-├── worker
-│   ├── src
-│   ├── api
-│   ├── parser
-│   ├── auth
-│   ├── cache
-│   └── storage
-│
-├── admin
-│   └── Vue3 Admin
-│
-├── database
+```text
+IPTV-alpha/
+├── .github/
+│   └── workflows/
+│       └── deploy-worker.yml
+├── worker/
+│   ├── src/
+│   ├── Dockerfile
+│   ├── package.json
+│   └── wrangler.toml
+├── database/
 │   └── schema.sql
-│
-├── docker
-│
-├── docs
-│
+├── docs/
+│   ├── API.md
+│   ├── DEPLOY.md
+│   ├── DOCKER.md
+│   ├── CLOUDFLARE.md
+│   ├── ARCHITECTURE.md
+│   └── images/
+├── docker-compose.yml
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── LICENSE
 └── README.md
 ```
 
----
+## 🚀 快速开始
 
-# 🚀 部署
-
-## Cloudflare Worker
-
-安装 Wrangler：
+### 1. 克隆项目
 
 ```bash
-npm install -g wrangler
+git clone https://github.com/koolcy/IPTV-alpha.git
+cd IPTV-alpha
 ```
 
-登录：
-
-```bash
-wrangler login
-```
-
-部署：
+### 2. 本地运行 Worker
 
 ```bash
 cd worker
 npm install
-wrangler deploy
+npm run dev
 ```
 
----
+默认 Wrangler 开发地址通常为：
 
-## KV
+```text
+http://localhost:8787
+```
 
-创建：
+实际地址以终端输出为准。
+
+### 3. Docker
+
+在项目根目录：
 
 ```bash
-wrangler kv namespace create IPTV_KV
+docker compose up --build
 ```
 
-用途：
-
-- 缓存
-- 配置
-- Token限制
-
----
-
-## D1 数据库
-
-创建：
+停止：
 
 ```bash
-wrangler d1 create iptv
+docker compose down
 ```
 
-初始化：
+## ☁️ Cloudflare 部署
 
 ```bash
-wrangler d1 execute iptv --file database/schema.sql
+cd worker
+npm install
+npx wrangler login
+npm run deploy
 ```
 
-用途：
+如果使用 D1 / KV，请先创建资源，再把对应 binding 配置到 `worker/wrangler.toml`。
 
-- 用户
-- 频道
-- EPG
-- 日志
-
----
-
-# 🐳 Docker开发
-
-启动：
+D1：
 
 ```bash
-docker compose up -d
+npx wrangler d1 create iptv
+npx wrangler d1 execute iptv --remote --file=../database/schema.sql
 ```
 
-访问：
+KV：
 
-```
-Worker http://localhost:8787
-Admin http://localhost:5173
-```
-
----
-
-# 🔄 GitHub Actions 自动部署
-
-支持：
-
-```
-GitHub Push
-    ↓
-Actions
-    ↓
-Wrangler
-    ↓
-Cloudflare Worker
+```bash
+npx wrangler kv namespace create IPTV_KV
 ```
 
-需要配置：
+详细说明见 [`docs/DEPLOY.md`](docs/DEPLOY.md) 和 [`docs/CLOUDFLARE.md`](docs/CLOUDFLARE.md)。
 
+## 🔄 GitHub Actions 自动部署
+
+仓库包含：
+
+```text
+.github/workflows/deploy-worker.yml
 ```
+
+在 GitHub → Settings → Secrets and variables → Actions 中设置：
+
+```text
 CLOUDFLARE_ACCOUNT_ID
 CLOUDFLARE_API_TOKEN
 ```
 
----
+之后推送到 `main` 会触发 Worker 部署；也支持 GitHub Actions 手动运行。
 
-# 🔌 API
+## 🔌 当前 API
 
-## M3U
+### M3U
 
-```
+```http
 GET /live.m3u
 ```
 
-## TVBox
+### TVBox
 
-```
+```http
 GET /tvbox
 ```
 
-## 用户订阅
+### 默认路由
 
-```
-GET /u/{token}.m3u
-```
+Worker 未匹配到上述接口时返回当前版本运行提示。
 
----
+完整接口说明见 [`docs/API.md`](docs/API.md)。
 
-# ⏰ 自动任务
+## 🧩 Cloudflare 组件规划
 
-支持：
+| 组件 | 用途 | 当前状态 |
+|---|---|---|
+| Workers | API 与 IPTV 输出 | 使用中 |
+| KV | 缓存 / 配置 | 已配置基础 binding |
+| D1 | 结构化数据 | 已配置基础 binding |
+| Cron | 定时任务 | 规划中 |
+| R2 | 备份 / 对象存储 | 规划中 |
 
-- 频道检测
-- EPG同步
-- 缓存刷新
-- 数据维护
+## 🛣️ Roadmap
 
----
+### v3.0 Alpha → Beta
 
-# 🛣 Roadmap
+- [ ] Vue3 IPTV 管理后台
+- [ ] 直播源 CRUD
+- [ ] 频道数据库管理
+- [ ] EPG / XMLTV 管理
+- [ ] 用户与 Token 订阅
+- [ ] 权限与套餐
+- [ ] 频道在线检测
+- [ ] Cron 自动维护
+- [ ] API 限流与缓存
 
-## v3.0 Stable
+### v3.0 Stable
 
-✅ IPTV核心
+- [ ] 完成核心功能实现
+- [ ] 完成前后端联调
+- [ ] 完整生产部署验证
+- [ ] 完整测试与安全审查
+- [ ] 正式 Release
 
-✅ M3U/TXT解析
+## 📚 文档
 
-✅ TVBox
+- [`docs/DEPLOY.md`](docs/DEPLOY.md) — 完整部署指南
+- [`docs/DOCKER.md`](docs/DOCKER.md) — Docker 开发
+- [`docs/CLOUDFLARE.md`](docs/CLOUDFLARE.md) — Cloudflare 配置
+- [`docs/API.md`](docs/API.md) — API 文档
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — 架构说明
+- [`CHANGELOG.md`](CHANGELOG.md) — 更新记录
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — 贡献指南
+- [`SECURITY.md`](SECURITY.md) — 安全策略
 
-✅ EPG
+## 🔐 安全
 
-✅ D1数据库
+请勿将 Cloudflare API Token、密码、Cookie 或其他凭据提交到 Git。GitHub Actions 使用 Secrets 保存部署凭据。
 
-✅ 用户系统
+发现安全问题请参考 [`SECURITY.md`](SECURITY.md)，不要在公开 Issue 中发布敏感信息。
 
-✅ 权限系统
+## ⚠️ 免责声明
 
-✅ CDN缓存
+本项目提供直播数据的解析、管理与输出能力，不提供或托管未经授权的节目内容。
 
-✅ 自动部署
+使用者应确保所使用的直播源、节目单及相关内容具有合法授权，并遵守所在地法律法规及第三方服务条款。
 
-## v3.1
+## 📄 License
 
-计划：
-
-- Docker生产版
-- 多租户
-- Web播放器
-- 手机管理端
-- AI频道整理
-
----
-
-# ⚠️ 免责声明
-
-本项目仅提供 IPTV 数据管理和接口生成能力。
-
-请确保使用合法授权的数据源，并遵守当地法律法规。
-
----
-
-# License
-
-MIT License
-
-Copyright © koolcy
+MIT License — Copyright © 2026 koolcy
