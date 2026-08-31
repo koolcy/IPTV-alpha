@@ -11,6 +11,7 @@ import {
 } from './admin.js';
 import { adminEpgImport, adminEpgList, adminEpgClear } from './epg.js';
 import { adminUserList, adminUserAdd, adminUserUpdate, adminUserDelete, adminUserResetToken } from './users.js';
+import { listPlans, savePlan, deletePlan } from './plan-admin.js';
 
 export async function apiRouter(request, env) {
   const url = new URL(request.url);
@@ -32,6 +33,9 @@ export async function apiRouter(request, env) {
   if (url.pathname === '/admin/user/update' && request.method === 'POST') return adminUserUpdate(request, env);
   if (url.pathname === '/admin/user/delete' && request.method === 'POST') return adminUserDelete(request, env);
   if (url.pathname === '/admin/user/reset-token' && request.method === 'POST') return adminUserResetToken(request, env);
+  if (url.pathname === '/admin/plan/list' && request.method === 'GET') return listPlans(request, env);
+  if (url.pathname === '/admin/plan/save' && request.method === 'POST') return savePlan(request, env);
+  if (url.pathname === '/admin/plan/delete' && request.method === 'POST') return deletePlan(request, env);
 
   return Response.json({ error: 'Not Found' }, { status: 404 });
 }
